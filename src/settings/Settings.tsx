@@ -1022,7 +1022,7 @@ export const SETTINGS: Settings = {
     },
     "language": {
         supportedLevels: LEVELS_DEVICE_ONLY_SETTINGS_WITH_CONFIG,
-        default: "en",
+        default: "fr",
         // For privacy
         shouldExportToRageshake: false,
     },

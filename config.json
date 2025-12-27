@@ -1,8 +1,8 @@
 {
     "default_server_config": {
         "m.homeserver": {
-            "base_url": "https://matrix-client.matrix.org",
-            "server_name": "matrix.org"
+            "base_url": "https://skiris.airistech.ai",
+            "server_name": "skiris.airistech.ai"
         },
         "m.identity_server": {
             "base_url": "https://vector.im"
