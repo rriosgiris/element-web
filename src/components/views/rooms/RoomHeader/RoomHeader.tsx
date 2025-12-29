@@ -122,8 +122,8 @@ function RoomHeaderButtons({
     );
 
     const videoCallIconWithTooltip = (
-        <Tooltip label={videoCallDisabledReason ?? _t("voip|video_call")}>
-            <VideoCallIcon />
+        <Tooltip label={videoCallDisabledReason ?? (memberCount > 2 ? _t("voip|voice_call") : _t("voip|video_call"))}>
+            {memberCount > 2 ? <VoiceCallIcon /> : <VideoCallIcon />}
         </Tooltip>
     );
 
@@ -162,7 +162,7 @@ function RoomHeaderButtons({
                     trigger={
                         <IconButton
                             disabled={!!videoCallDisabledReason}
-                            aria-label={videoCallDisabledReason ?? _t("voip|video_call")}
+                            aria-label={videoCallDisabledReason ?? (memberCount > 2 ? _t("voip|voice_call") : _t("voip|video_call"))}
                         >
                             {videoCallIconWithTooltip}
                         </IconButton>
@@ -183,7 +183,7 @@ function RoomHeaderButtons({
                                     setVideoMenuOpen(false);
                                     videoCallClick(ev, option);
                                 }}
-                                Icon={VideoCallIcon}
+                                Icon={memberCount > 2 ? VoiceCallIcon : VideoCallIcon}
                                 onSelect={() => {} /* Dummy handler since we want the click event.*/}
                             />
                         );
@@ -192,7 +192,7 @@ function RoomHeaderButtons({
             ) : (
                 <IconButton
                     disabled={!!videoCallDisabledReason}
-                    aria-label={videoCallDisabledReason ?? _t("voip|video_call")}
+                    aria-label={videoCallDisabledReason ?? (memberCount > 2 ? _t("voip|voice_call") : _t("voip|video_call"))}
                     onClick={videoClick}
                 >
                     {videoCallIconWithTooltip}
