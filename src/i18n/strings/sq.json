@@ -1451,8 +1451,8 @@
         "label": "Shkallë pushteti",
         "restricted": "E kufizuar"
     },
-    "powered_by_matrix": "Bazuar në Matrix",
-    "powered_by_matrix_with_logo": "Fjalosje &amp; bashkëpunim i decentralizuar, i fshehtëzuar, bazuar në $matrixLogo",
+    "powered_by_matrix": "Bazuar në Giris",
+    "powered_by_matrix_with_logo": "Fjalosje &amp; bashkëpunim i decentralizuar, i fshehtëzuar, bazuar në Giris",
     "presence": {
         "away": "I larguar",
         "busy": "I zënë",

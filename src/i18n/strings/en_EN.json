@@ -1814,8 +1814,8 @@
         "moderator": "Moderator",
         "restricted": "Restricted"
     },
-    "powered_by_matrix": "Powered by Matrix",
-    "powered_by_matrix_with_logo": "Decentralised, encrypted chat &amp; collaboration powered by $matrixLogo",
+    "powered_by_matrix": "Powered by Giris",
+    "powered_by_matrix_with_logo": "Decentralised, encrypted chat &amp; collaboration powered by Giris",
     "presence": {
         "away": "Away",
         "busy": "Busy",
@@ -3663,14 +3663,14 @@
             "show_video": "Show video"
         },
         "m.widget": {
-            "added": "%(widgetName)s widget added by %(senderName)s",
-            "jitsi_ended": "Video conference ended by %(senderName)s",
-            "jitsi_join_right_prompt": "Join the conference from the room information card on the right",
+            "added": "Conference started by %(senderName)s",
+            "jitsi_ended": "Conference ended by %(senderName)s",
+            "jitsi_join_right_prompt": "Join the conference from the information card on the right",
             "jitsi_join_top_prompt": "Join the conference at the top of this room",
-            "jitsi_started": "Video conference started by %(senderName)s",
-            "jitsi_updated": "Video conference updated by %(senderName)s",
-            "modified": "%(widgetName)s widget modified by %(senderName)s",
-            "removed": "%(widgetName)s widget removed by %(senderName)s"
+            "jitsi_started": "Skiris conference started by %(senderName)s",
+            "jitsi_updated": "Conference settings updated by %(senderName)s",
+            "modified": "Conference modified by %(senderName)s",
+            "removed": "Conference closed by %(senderName)s"
         },
         "mab": {
             "collapse_reply_chain": "Collapse quotes",
@@ -4057,7 +4057,7 @@
         "hangup": "Hangup",
         "hide_sidebar_button": "Hide sidebar",
         "input_devices": "Input devices",
-        "jitsi_call": "Jitsi Conference",
+        "jitsi_call": "Conference",
         "join_button_tooltip_call_full": "Sorry — this call is currently full",
         "legacy_call": "Legacy Call",
         "maximise": "Fill screen",

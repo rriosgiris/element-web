@@ -1444,8 +1444,8 @@
         "moderator": "Συντονιστής",
         "restricted": "Περιορισμένο/η"
     },
-    "powered_by_matrix": "Με την υποστήριξη του Matrix",
-    "powered_by_matrix_with_logo": "Αποκεντρωμένη, κρυπτογραφημένη συνομιλία και συνεργασία χρησιμοποιώντας το $matrixLogo",
+    "powered_by_matrix": "Με την υποστήριξη του Giris",
+    "powered_by_matrix_with_logo": "Αποκεντρωμένη, κρυπτογραφημένη συνομιλία και συνεργασία χρησιμοποιώντας το Giris",
     "presence": {
         "away": "Απομακρυσμένος",
         "busy": "Απασχολημένος",

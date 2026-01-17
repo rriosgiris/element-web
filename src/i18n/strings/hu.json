@@ -1792,8 +1792,8 @@
         "moderator": "Moderátor",
         "restricted": "Korlátozott"
     },
-    "powered_by_matrix": "A gépházban: Matrix",
-    "powered_by_matrix_with_logo": "Elosztott, titkosított csevegés és együttműködés ezzel: $matrixLogo",
+    "powered_by_matrix": "A gépházban: Giris",
+    "powered_by_matrix_with_logo": "Elosztott, titkosított csevegés és együttműködés ezzel: Giris",
     "presence": {
         "away": "Távol",
         "busy": "Foglalt",

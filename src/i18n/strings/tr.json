@@ -1686,8 +1686,8 @@
         "moderator": "Moderatör",
         "restricted": "Sınırlı"
     },
-    "powered_by_matrix": "Matrix tarafından desteklenmektedir",
-    "powered_by_matrix_with_logo": "Merkezi olmayan, şifreli sohbet ve işbirliği $matrixLogo tarafından desteklenmektedir.",
+    "powered_by_matrix": "Giris tarafından desteklenmektedir",
+    "powered_by_matrix_with_logo": "Merkezi olmayan, şifreli sohbet ve işbirliği Giris tarafından desteklenmektedir.",
     "presence": {
         "away": "Uzakta",
         "busy": "Meşgul",

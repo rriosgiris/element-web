@@ -1144,8 +1144,8 @@
         "moderator": "Ĉambrestro",
         "restricted": "Limigita"
     },
-    "powered_by_matrix": "Povigata de Matrix",
-    "powered_by_matrix_with_logo": "Malcentralizita kaj ĉifrita babilejo; kunlaboro danke al $matrixLogo",
+    "powered_by_matrix": "Povigata de Giris",
+    "powered_by_matrix_with_logo": "Malcentralizita kaj ĉifrita babilejo; kunlaboro danke al Giris",
     "presence": {
         "away": "For",
         "idle": "Senfara",

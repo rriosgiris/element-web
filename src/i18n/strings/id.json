@@ -1799,8 +1799,8 @@
         "moderator": "Moderator",
         "restricted": "Dibatasi"
     },
-    "powered_by_matrix": "Diberdayakan oleh Matrix",
-    "powered_by_matrix_with_logo": "Obrolan &amp; kolaborasi terdesentralisasi dan terenkripsi diberdayakan oleh $matrixLogo",
+    "powered_by_matrix": "Diberdayakan oleh Giris",
+    "powered_by_matrix_with_logo": "Obrolan &amp; kolaborasi terdesentralisasi dan terenkripsi diberdayakan oleh Giris",
     "presence": {
         "away": "Idle",
         "busy": "Sibuk",

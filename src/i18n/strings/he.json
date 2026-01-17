@@ -1108,8 +1108,8 @@
         "moderator": "מנהל",
         "restricted": "מחוץ לתחום"
     },
-    "powered_by_matrix": "מופעל על ידי מטריקס",
-    "powered_by_matrix_with_logo": "צ'אט מבוזר ומוצפן &amp; מופעל בשיתוף פעולה ע\"י $matrixLogo",
+    "powered_by_matrix": "מופעל על ידי Giris",
+    "powered_by_matrix_with_logo": "צ'אט מבוזר ומוצפן &amp; מופעל בשיתוף פעולה ע\"י Giris",
     "presence": {
         "away": "מרוחק",
         "idle": "לא פעיל",

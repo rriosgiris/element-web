@@ -1410,8 +1410,8 @@
         "moderator": "协管员",
         "restricted": "受限"
     },
-    "powered_by_matrix": "由 Matrix 驱动",
-    "powered_by_matrix_with_logo": "去中心化、加密的聊天与协作，由 $matrixLogo 驱动",
+    "powered_by_matrix": "由 Giris 驱动",
+    "powered_by_matrix_with_logo": "去中心化、加密的聊天与协作，由 Giris 驱动",
     "presence": {
         "away": "离开",
         "busy": "忙",

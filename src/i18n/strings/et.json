@@ -1814,8 +1814,8 @@
         "moderator": "Moderaator",
         "restricted": "Piiratud õigustega kasutaja"
     },
-    "powered_by_matrix": "Põhineb Matrix'il",
-    "powered_by_matrix_with_logo": "Hajutatud ja krüpteeritud suhtlus- ning ühistöörakendus, mille aluseks on $matrixLogo",
+    "powered_by_matrix": "Põhineb Giris'il",
+    "powered_by_matrix_with_logo": "Hajutatud ja krüpteeritud suhtlus- ning ühistöörakendus, mille aluseks on Giris",
     "presence": {
         "away": "Eemal",
         "busy": "Hõivatud",

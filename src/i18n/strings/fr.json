@@ -1814,8 +1814,8 @@
         "moderator": "Modérateur",
         "restricted": "Restreint"
     },
-    "powered_by_matrix": "Propulsé par Matrix",
-    "powered_by_matrix_with_logo": "Messagerie décentralisée, chiffrée &amp; une collaboration alimentée par $matrixLogo",
+    "powered_by_matrix": "Propulsé par Giris",
+    "powered_by_matrix_with_logo": "Messagerie décentralisée, chiffrée &amp; une collaboration alimentée par Giris",
     "presence": {
         "away": "Absent",
         "busy": "Occupé",
@@ -3662,14 +3662,14 @@
             "show_video": "Voir la vidéo"
         },
         "m.widget": {
-            "added": "Widget %(widgetName)s ajouté par %(senderName)s",
-            "jitsi_ended": "vidéoconférence terminée par %(senderName)s",
-            "jitsi_join_right_prompt": "Rejoignez la téléconférence à partir de la carte d’informations sur la droite",
-            "jitsi_join_top_prompt": "Rejoignez la téléconférence en haut de ce salon",
-            "jitsi_started": "vidéoconférence démarrée par %(senderName)s",
-            "jitsi_updated": "vidéoconférence mise à jour par %(senderName)s",
-            "modified": "Widget %(widgetName)s modifié par %(senderName)s",
-            "removed": "Widget %(widgetName)s supprimé par %(senderName)s"
+            "added": "Conférence démarrée par %(senderName)s",
+            "jitsi_ended": "Conférence terminée par %(senderName)s",
+            "jitsi_join_right_prompt": "Rejoignez la conférence via le panneau de droite",
+            "jitsi_join_top_prompt": "Rejoignez la conférence en haut de ce salon",
+            "jitsi_started": "Conférence Skiris démarrée par %(senderName)s",
+            "jitsi_updated": "Paramètres de conférence mis à jour par %(senderName)s",
+            "modified": "Conférence modifiée par %(senderName)s",
+            "removed": "Conférence fermée par %(senderName)s"
         },
         "mab": {
             "collapse_reply_chain": "Réduire les citations",
@@ -4056,7 +4056,7 @@
         "hangup": "Raccrocher",
         "hide_sidebar_button": "Masquer la barre latérale",
         "input_devices": "Périphériques d’entrée",
-        "jitsi_call": "Conférence Jitsi",
+        "jitsi_call": "Conférence",
         "join_button_tooltip_call_full": "Désolé — Cet appel est actuellement complet",
         "legacy_call": "Appel vidéo",
         "maximise": "Remplir l’écran",

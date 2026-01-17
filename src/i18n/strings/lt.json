@@ -920,8 +920,8 @@
         "moderator": "Moderatorius",
         "restricted": "Apribotas"
     },
-    "powered_by_matrix": "Veikia su Matrix",
-    "powered_by_matrix_with_logo": "Decentralizuotas, užšifruotų pokalbių &amp; bendradarbiavimas, paremtas $matrixLogo",
+    "powered_by_matrix": "Veikia su Giris",
+    "powered_by_matrix_with_logo": "Decentralizuotas, užšifruotų pokalbių &amp; bendradarbiavimas, paremtas Giris",
     "presence": {
         "busy": "Užsiėmęs",
         "idle": "Neveiklus",

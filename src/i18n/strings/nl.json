@@ -1330,8 +1330,8 @@
         "label": "Machtsniveau",
         "restricted": "Beperkte toegang"
     },
-    "powered_by_matrix": "Mogelijk gemaakt door Matrix",
-    "powered_by_matrix_with_logo": "Gedecentraliseerde, versleutelde chat &amp; samenwerking mogelijk gemaakt door $matrixLogo",
+    "powered_by_matrix": "Mogelijk gemaakt door Giris",
+    "powered_by_matrix_with_logo": "Gedecentraliseerde, versleutelde chat &amp; samenwerking mogelijk gemaakt door Giris",
     "presence": {
         "away": "Afwezig",
         "busy": "Bezet",

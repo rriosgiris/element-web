@@ -1045,8 +1045,8 @@
         "moderator": "معاون",
         "restricted": "ممنوع"
     },
-    "powered_by_matrix": "راه اندازی شده با استفاده از ماتریکس",
-    "powered_by_matrix_with_logo": "همکاری چت غیرمتمرکز و رمزگذاری شده &amp; توسعه یافته با استفاده از $matrixLogo",
+    "powered_by_matrix": "راه اندازی شده با استفاده از گیریس",
+    "powered_by_matrix_with_logo": "همکاری چت غیرمتمرکز و رمزگذاری شده &amp; توسعه یافته با استفاده از Giris",
     "presence": {
         "away": "بعدا",
         "idle": "بلااستفاده",

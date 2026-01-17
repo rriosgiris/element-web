@@ -1752,8 +1752,8 @@
         "moderator": "Moderator",
         "restricted": "Begränsad"
     },
-    "powered_by_matrix": "Drivs av Matrix",
-    "powered_by_matrix_with_logo": "Decentraliserad krypterad chatt &amp; samarbete som drivs av $matrixLogo",
+    "powered_by_matrix": "Drivs av Giris",
+    "powered_by_matrix_with_logo": "Decentraliserad krypterad chatt &amp; samarbete som drivs av Giris",
     "presence": {
         "away": "Borta",
         "busy": "Upptagen",

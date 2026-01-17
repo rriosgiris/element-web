@@ -1787,8 +1787,8 @@
         "moderator": "조정자",
         "restricted": "제한됨"
     },
-    "powered_by_matrix": "Powered by Matrix",
-    "powered_by_matrix_with_logo": "분산형, 암호화된 채팅 및 협업 플랫폼 $matrixLogo",
+    "powered_by_matrix": "Powered by Giris",
+    "powered_by_matrix_with_logo": "분산형, 암호화된 채팅 및 협업 플랫폼 Giris",
     "presence": {
         "away": "자리 비움",
         "busy": "다른 용무 중",

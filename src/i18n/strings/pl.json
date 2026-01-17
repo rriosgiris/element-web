@@ -1789,8 +1789,8 @@
         "moderator": "Moderator",
         "restricted": "Ograniczony"
     },
-    "powered_by_matrix": "Zasilane przez Matrix",
-    "powered_by_matrix_with_logo": "Zdecentralizowany czat szyfrowany i współpraca oparta na $matrixLogo",
+    "powered_by_matrix": "Zasilane przez Giris",
+    "powered_by_matrix_with_logo": "Zdecentralizowany czat szyfrowany i współpraca oparta na Giris",
     "presence": {
         "away": "Z dala od urządzenia",
         "busy": "Zajęty",

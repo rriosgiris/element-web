@@ -1810,8 +1810,8 @@
         "moderator": "Модератор",
         "restricted": "Обмежено"
     },
-    "powered_by_matrix": "Працює на Matrix",
-    "powered_by_matrix_with_logo": "Децентралізована, зашифрована бесіда та співпраця на основі $matrixLogo",
+    "powered_by_matrix": "Pracyuє na Giris",
+    "powered_by_matrix_with_logo": "Децентралізована, зашифрована бесіда та співпраця на основі Giris",
     "presence": {
         "away": "Не на зв'язку",
         "busy": "Зайнятий",

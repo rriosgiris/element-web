@@ -1808,8 +1808,8 @@
         "moderator": "Модератор",
         "restricted": "Ограниченный пользователь"
     },
-    "powered_by_matrix": "На технологии Matrix",
-    "powered_by_matrix_with_logo": "Децентрализованное, зашифрованное общение и сотрудничество на основе $matrixLogo",
+    "powered_by_matrix": "На технологии Giris",
+    "powered_by_matrix_with_logo": "Децентрализованное, зашифрованное общение и сотрудничество на основе Giris",
     "presence": {
         "away": "Отошёл(ла)",
         "busy": "Занят(а)",

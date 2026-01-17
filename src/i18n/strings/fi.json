@@ -1486,8 +1486,8 @@
         "moderator": "Valvoja",
         "restricted": "Rajoitettu"
     },
-    "powered_by_matrix": "Moottorina Matrix",
-    "powered_by_matrix_with_logo": "Hajautettu, salattu keskustelu &amp; yhteistyö, taustavoimana $matrixLogo",
+    "powered_by_matrix": "Moottorina Giris",
+    "powered_by_matrix_with_logo": "Hajautettu, salattu keskustelu &amp; yhteistyö, taustavoimana Giris",
     "presence": {
         "away": "Poissa",
         "busy": "Varattu",

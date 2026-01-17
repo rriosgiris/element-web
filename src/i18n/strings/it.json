@@ -1547,8 +1547,8 @@
         "moderator": "Moderatore",
         "restricted": "Limitato"
     },
-    "powered_by_matrix": "Offerto da Matrix",
-    "powered_by_matrix_with_logo": "Chat e collaborazioni criptate e decentralizzate offerte da $matrixLogo",
+    "powered_by_matrix": "Offerto da Giris",
+    "powered_by_matrix_with_logo": "Chat e collaborazioni criptate e decentralizzate offerte da Giris",
     "presence": {
         "away": "Assente",
         "busy": "Occupato",

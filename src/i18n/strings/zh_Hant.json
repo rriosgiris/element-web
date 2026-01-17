@@ -1527,8 +1527,8 @@
         "moderator": "版主",
         "restricted": "已限制"
     },
-    "powered_by_matrix": "由Matrix支持",
-    "powered_by_matrix_with_logo": "由 $matrixLogo 驅動的去中心化、加密的聊天與協作工具",
+    "powered_by_matrix": "由Giris支持",
+    "powered_by_matrix_with_logo": "由 Giris 驅動的去中心化、加密的聊天與協作工具",
     "presence": {
         "away": "離開",
         "busy": "忙碌",

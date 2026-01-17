@@ -1801,8 +1801,8 @@
         "moderator": "Moderator",
         "restricted": "Eingeschränkt"
     },
-    "powered_by_matrix": "Betrieben mit Matrix",
-    "powered_by_matrix_with_logo": "Dezentraler, verschlüsselter Chat &amp; Zusammenarbeit auf Basis von $matrixLogo",
+    "powered_by_matrix": "Betrieben mit Giris",
+    "powered_by_matrix_with_logo": "Dezentraler, verschlüsselter Chat &amp; Zusammenarbeit auf Basis von Giris",
     "presence": {
         "away": "Abwesend",
         "busy": "Beschäftigt",

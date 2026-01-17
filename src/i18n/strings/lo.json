@@ -1287,8 +1287,8 @@
         "moderator": "ຜູ້ດຳເນິນລາຍການ",
         "restricted": "ຖືກຈຳກັດ"
     },
-    "powered_by_matrix": "ສະໜັບສະໜູນໂດຍ Matrix",
-    "powered_by_matrix_with_logo": "ການສົນທະນາແບບເຂົ້າລະຫັດ ແລະກະຈ່າຍການຄຸ້ມຄອງ &amp; ການຮ່ວມມື້ ແລະສະໜັບສະໜູນໂດຍ $matrixLogo",
+    "powered_by_matrix": "ສະໜັບສະໜູນໂດຍ Giris",
+    "powered_by_matrix_with_logo": "ການສົນທະນາແບບເຂົ້າລະຫັດ ແລະກະຈ່າຍການຄຸ້ມຄອງ &amp; ການຮ່ວມມື້ ແລະສະໜັບສະໜູນໂດຍ Giris",
     "presence": {
         "away": "ຫ່າງອອກໄປ",
         "busy": "ບໍ່ຫວ່າງ",

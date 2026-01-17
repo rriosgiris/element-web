@@ -1280,8 +1280,8 @@
         "moderator": "Umsjónarmaður",
         "restricted": "Takmarkað"
     },
-    "powered_by_matrix": "Keyrt með Matrix",
-    "powered_by_matrix_with_logo": "Dreifstýrt, dulritað spjall og samskipti keyrt með $matrixLogo",
+    "powered_by_matrix": "Keyrt með Giris",
+    "powered_by_matrix_with_logo": "Dreifstýrt, dulritað spjall og samskipti keyrt með Giris",
     "presence": {
         "away": "Fjarverandi",
         "busy": "Upptekinn",
