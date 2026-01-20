@@ -1,43 +1,27 @@
-/*
-Copyright 2024 New Vector Ltd.
-
-SPDX-License-Identifier: AGPL-3.0-only OR GPL-3.0-only OR LicenseRef-Element-Commercial
-Please see LICENSE files in the repository root for full details.
-*/
-
 .mx_JitsiGroupCallToast_container {
     .mx_JitsiGroupCallToast {
         display: flex;
-        align-items: center;
-        gap: var(--cpd-space-3);
-        padding: var(--cpd-space-3) var(--cpd-space-4);
+        flex-direction: column;
+        gap: var(--cpd-space-4); /* espace entre contenu et boutons */
+        padding: var(--cpd-space-4); /* espace global avec les bords */
         background: var(--cpd-color-bg-subtle-primary);
         border-radius: var(--cpd-radius-md);
         border: 1px solid var(--cpd-color-border-interactive-primary);
 
         .mx_JitsiGroupCallToast_content {
+            background-color: transparent !important;
+            border-color: transparent !important;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: var(--cpd-space-3);
-            flex: 1;
-
-            .mx_JitsiGroupCallToast_icon {
-                width: 24px;
-                height: 24px;
-                min-width: 24px;
-                color: var(--cpd-color-icon-secondary);
-            }
+            width: 100%;
+            /* ✅ ESPACE AVEC LES BORDS DU FOND GRIS */
+            padding: var(--cpd-space-3);
+            border-radius: var(--cpd-radius-sm);
 
             .mx_JitsiGroupCallToast_text {
                 flex: 1;
                 min-width: 0;
-
-                .mx_JitsiGroupCallToast_title {
-                    font-weight: 500;
-                    font-size: var(--cpd-font-size-body-md);
-                    color: var(--cpd-color-text-primary);
-                    margin-bottom: var(--cpd-space-1);
-                }
 
                 .mx_JitsiGroupCallToast_description {
                     font-size: var(--cpd-font-size-body-sm);
@@ -48,9 +32,14 @@ Please see LICENSE files in the repository root for full details.
 
         .mx_JitsiGroupCallToast_buttons {
             display: flex;
-            gap: var(--cpd-space-2);
-            flex-wrap: wrap;
-            align-items: center;
+            justify-content: center; /* 🎯 centré */
+            gap: var(--cpd-space-3);
+
+             /* espace interne par rapport au fond gris */
+            padding: var(--cpd-space-2) 0 0;
+
+            /* espace entre boutons et bord du container */
+            padding: var(--cpd-space-2) var(--cpd-space-3) 0;
 
             button {
                 white-space: nowrap;

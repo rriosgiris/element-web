@@ -7,7 +7,6 @@ Please see LICENSE files in the repository root for full details.
 
 import React from "react";
 import { Button } from "@vector-im/compound-web";
-import VideoCallIcon from "@vector-im/compound-design-tokens/assets/web/icons/video-call-solid";
 
 import { _t } from "../languageHandler";
 import { MatrixClientPeg } from "../MatrixClientPeg";
@@ -19,6 +18,27 @@ interface IProps {
     onDismiss?: () => void;
 }
 
+const toastStyle: React.CSSProperties = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "4px",          // ↓ était 16px
+};
+
+const contentStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "flex-start",
+    padding: "4px",      // ↓ était 16px
+    background: "transparent",
+};
+
+const buttonsStyle: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "center",
+    gap: "4px",           // ↓ était 12px
+    padding: "0 4px 4px", // ↓ était 16px
+};
+
+
 /**
  * Toast notification for when a Jitsi group call is started.
  * Displays the room name and a button to join the call.
@@ -29,32 +49,32 @@ export default class JitsiGroupCallToast extends React.Component<IProps> {
         const roomName = room?.name || _t("voip|unknown_caller");
 
         return (
-            <div className="mx_JitsiGroupCallToast">
-                <div className="mx_JitsiGroupCallToast_content">
-                    <VideoCallIcon className="mx_JitsiGroupCallToast_icon" />
+            <div className="mx_JitsiGroupCallToast" style={toastStyle}  >
+                <div className="mx_JitsiGroupCallToast_content" style={contentStyle}>
+                    {/*<VideoCallIcon className="mx_JitsiGroupCallToast_icon" />*/}
                     <div className="mx_JitsiGroupCallToast_text">
-                        <div className="mx_JitsiGroupCallToast_title">
+                        {/*<div className="mx_JitsiGroupCallToast_title">
                             {_t("voip|jitsi_group_call_started" as any, { roomName: roomName })}
-                        </div>
+                        </div>*/}
                         <div className="mx_JitsiGroupCallToast_description">
-                            {_t("voip|jitsi_group_call_description" as any)}
+                            {_t("voip|jitsi_group_call_description" as any, { roomName: roomName })}
                         </div>
                     </div>
                 </div>
-                <div className="mx_JitsiGroupCallToast_buttons">
-                    <Button
-                        onClick={this.onJoin}
-                        kind="primary"
-                        size="sm"
-                    >
-                        {_t("action|ok")}
-                    </Button>
+                <div className="mx_JitsiGroupCallToast_buttons" style={buttonsStyle}>
                     <Button
                         onClick={this.onDismiss}
                         kind="secondary"
                         size="sm"
                     >
                         {_t("action|dismiss")}
+                    </Button>
+                    <Button
+                        onClick={this.onJoin}
+                        kind="primary"
+                        size="sm"
+                    >
+                        {_t("action|ok")}
                     </Button>
                 </div>
             </div>
