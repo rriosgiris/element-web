@@ -267,3 +267,25 @@ start().catch((err) => {
     iframe.style.border = "0";
     document.getElementById("matrixchat")?.appendChild(iframe);
 });
+
+if (window.electron) {
+    window.electron.on("check_updates", (event, data) => {
+
+        console.log("Received update check response:", data);
+
+        // Si data est un objet, c'est que le moteur a trouvé une version différente
+        if (data && typeof data === 'object' && data.version) {
+            
+            const userConfirmed = window.confirm(
+                `Une nouvelle mise à jour de Skiris (${data.version}) est disponible.\n\n` +
+                `Notes : ${data.notes || "Améliorations de stabilité"}\n\n` +
+                `Voulez-vous ouvrir la page de téléchargement maintenant ?`
+            );
+
+            if (userConfirmed) {
+                // On demande à Electron d'ouvrir le lien GitHub dans le navigateur
+                window.electron.send("install_update", data.url);
+            }
+        }
+    });
+}

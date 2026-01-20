@@ -35,6 +35,7 @@ import { SettingLevel } from "./settings/SettingLevel";
 import QuestionDialog from "./components/views/dialogs/QuestionDialog";
 import ErrorDialog from "./components/views/dialogs/ErrorDialog";
 import WidgetStore from "./stores/WidgetStore";
+import { UPDATE_EVENT } from "./stores/AsyncStore";
 import { WidgetMessagingStore } from "./stores/widgets/WidgetMessagingStore";
 import { ElementWidgetActions } from "./stores/widgets/ElementWidgetActions";
 import { UIFeature } from "./settings/UIFeature";
@@ -44,6 +45,7 @@ import SdkConfig from "./SdkConfig";
 import { ensureDMExists } from "./createRoom";
 import { Container, WidgetLayoutStore } from "./stores/widgets/WidgetLayoutStore";
 import IncomingLegacyCallToast, { getIncomingLegacyCallToastKey } from "./toasts/IncomingLegacyCallToast";
+import JitsiGroupCallToast from "./toasts/JitsiGroupCallToast";
 import ToastStore from "./stores/ToastStore";
 import { type ViewRoomPayload } from "./dispatcher/payloads/ViewRoomPayload";
 import { InviteKind } from "./components/views/dialogs/InviteDialogTypes";
@@ -151,6 +153,12 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
     private backgroundAudio = new BackgroundAudio();
     private playingSources: Record<string, AudioBufferSourceNode> = {}; // Record them for stopping
 
+    private notifiedJitsiWidgets = new Set<string>(); // Track Jitsi widget IDs we've already notified about
+    private activeJitsiRingAudio: string | null = null; // Track which room has active ring audio
+    private previousJitsiWidgetIds = new Map<string, Set<string>>(); // Track previous widget IDs by room to detect new ones
+    private jitsiWidgetJoinListeners = new Map<string, () => void>(); // Track JoinCall event listeners by widget ID
+    private initializingRooms = new Set<string>(); // Track rooms currently initializing to ignore their initial widgets
+
     public static get instance(): LegacyCallHandler {
         if (!window.mxLegacyCallHandler) {
             window.mxLegacyCallHandler = new LegacyCallHandler();
@@ -183,6 +191,10 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
             MatrixClientPeg.safeGet().on(CallEventHandlerEvent.Incoming, this.onCallIncoming);
         }
 
+        // Listen for Jitsi widget additions to notify other participants
+        console.log("[LegacyCallHandler] Registering WidgetStore UPDATE_EVENT listener");
+        WidgetStore.instance.on(UPDATE_EVENT, this.onWidgetStoreUpdate);
+
         this.checkProtocols(CHECK_PROTOCOLS_ATTEMPTS);
     }
 
@@ -191,6 +203,10 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
         if (cli) {
             cli.removeListener(CallEventHandlerEvent.Incoming, this.onCallIncoming);
         }
+
+        // Stop listening for widget updates
+        console.log("[LegacyCallHandler] Removing WidgetStore UPDATE_EVENT listener");
+        WidgetStore.instance.removeListener(UPDATE_EVENT, this.onWidgetStoreUpdate);
     }
 
     /* istanbul ignore next (remove if we start using this function for things other than debug logging) */
@@ -330,6 +346,114 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
         if (room) cli.getCrypto()?.prepareToEncrypt(room);
     };
 
+    private onWidgetStoreUpdate = (roomIdOrNull: string | null): void => {
+        // roomIdOrNull can be null for global updates, we need to handle specific room updates
+        if (!roomIdOrNull) {
+            return;
+        }
+
+        console.log("[onWidgetStoreUpdate] Called for room:", roomIdOrNull);
+
+        const widgets = WidgetStore.instance.getApps(roomIdOrNull);
+        const currentJitsiWidgetIds = new Set<string>();
+        
+        if (widgets) {
+            // Collect all current Jitsi widget IDs
+            for (const widget of widgets) {
+                if (WidgetType.JITSI.matches(widget.type)) {
+                    currentJitsiWidgetIds.add(widget.id);
+                }
+            }
+        }
+
+        // Get the set of widget IDs we saw before
+        let previousIds = this.previousJitsiWidgetIds.get(roomIdOrNull);
+        
+        // If this is the first time we're seeing this room, initialize with current widgets
+        // This prevents false notifications on app startup/reload
+        if (previousIds === undefined) {
+            console.log("[onWidgetStoreUpdate] First update for this room, initializing previousIds with current widgets");
+            this.initializingRooms.add(roomIdOrNull);
+            previousIds = new Set([...currentJitsiWidgetIds]);
+            this.previousJitsiWidgetIds.set(roomIdOrNull, previousIds);
+            // Mark all existing widgets as already notified to avoid sound on startup
+            for (const widgetId of currentJitsiWidgetIds) {
+                this.notifiedJitsiWidgets.add(widgetId);
+            }
+            console.log("[onWidgetStoreUpdate] Room initialized, marked", currentJitsiWidgetIds.size, "widgets as pre-existing");
+            
+            // Schedule cleanup of initialization flag after a short delay
+            // This allows for any rapid subsequent updates to be processed correctly
+            setTimeout(() => {
+                this.initializingRooms.delete(roomIdOrNull);
+                console.log("[onWidgetStoreUpdate] Finished initializing room:", roomIdOrNull);
+            }, 100);
+            
+            return; // Don't process as new widgets during initialization
+        }
+        
+        // Skip if we're still initializing this room
+        if (this.initializingRooms.has(roomIdOrNull)) {
+            console.log("[onWidgetStoreUpdate] Room still initializing, skipping widget processing");
+            return;
+        }
+        
+        console.log("[onWidgetStoreUpdate] Previous widget IDs:", Array.from(previousIds), "Current:", Array.from(currentJitsiWidgetIds));
+
+        // Find newly added widgets (in current but not in previous)
+        const newWidgetIds = new Set([...currentJitsiWidgetIds].filter(id => !previousIds.has(id)));
+        console.log("[onWidgetStoreUpdate] New widgets:", Array.from(newWidgetIds));
+
+        // Find removed widgets (in previous but not in current)
+        const removedWidgetIds = new Set([...previousIds].filter(id => !currentJitsiWidgetIds.has(id)));
+        console.log("[onWidgetStoreUpdate] Removed widgets:", Array.from(removedWidgetIds));
+
+        // Handle removed widgets - stop notification and sound
+        for (const widgetId of removedWidgetIds) {
+            console.log("[onWidgetStoreUpdate] Handling removed widget:", widgetId);
+            this.stopJitsiRing(roomIdOrNull);
+            ToastStore.sharedInstance().dismissToast(`jitsi_call_${roomIdOrNull}`);
+            this.notifiedJitsiWidgets.delete(widgetId);
+            
+            // Clean up the JoinCall listener for this widget
+            const removeListener = this.jitsiWidgetJoinListeners.get(widgetId);
+            if (removeListener) {
+                removeListener();
+                this.jitsiWidgetJoinListeners.delete(widgetId);
+            }
+            
+            console.log("[onWidgetStoreUpdate] Removed widget handled");
+        }
+
+        // Update previous state
+        this.previousJitsiWidgetIds.set(roomIdOrNull, currentJitsiWidgetIds);
+
+        // Process only the new widgets that we haven't already notified about
+        for (const widgetId of newWidgetIds) {
+            // Skip if we've already notified about this widget
+            if (this.notifiedJitsiWidgets.has(widgetId)) {
+                console.log("[onWidgetStoreUpdate] Widget already notified:", widgetId);
+                continue;
+            }
+
+            const widget = widgets?.find(w => w.id === widgetId);
+            if (!widget) continue;
+
+            // Get the creator ID directly from the widget object
+            const creatorId = widget.creatorUserId;
+            if (!creatorId) {
+                continue;
+            }
+
+            // Mark this widget as notified
+            this.notifiedJitsiWidgets.add(widgetId);
+            console.log("[onWidgetStoreUpdate] Marking widget as notified:", widgetId);
+
+            // Notify other participants (not the creator)
+            this.notifyJitsiWidgetAdded(roomIdOrNull, creatorId);
+        }
+    };
+
     public getCallById(callId: string): MatrixCall | null {
         for (const call of this.calls.values()) {
             if (call.callId === callId) return call;
@@ -381,6 +505,12 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
         const logPrefix = `LegacyCallHandler.play(${audioId}):`;
         logger.debug(`${logPrefix} beginning of function`);
 
+        // If this audio is already playing, don't start a new one
+        if (this.playingSources[audioId]) {
+            logger.warn(`${logPrefix} Already playing audio ${audioId}! Skipping.`);
+            return;
+        }
+
         const audioInfo: Record<AudioID, [prefix: string, loop: boolean]> = {
             [AudioID.Ring]: [`./media/ring`, true],
             [AudioID.Ringback]: [`./media/ringback`, true],
@@ -390,9 +520,6 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
 
         const [urlPrefix, loop] = audioInfo[audioId];
         const source = await this.backgroundAudio.pickFormatAndPlay(urlPrefix, ["mp3", "ogg"], loop);
-        if (this.playingSources[audioId]) {
-            logger.warn(`${logPrefix} Already playing audio ${audioId}!`);
-        }
         this.playingSources[audioId] = source;
         logger.debug(`${logPrefix} playing audio successfully`);
     }
@@ -1017,6 +1144,7 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
 
     private async placeJitsiCall(roomId: string, type: CallType): Promise<void> {
         const client = MatrixClientPeg.safeGet();
+        console.log("[LegacyCallHandler] placeJitsiCall called for room:", roomId);
         logger.info(`Place conference call in ${roomId}`);
 
         dis.dispatch({ action: "appsDrawer", show: true });
@@ -1024,6 +1152,7 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
         // Prevent double clicking the call button
         const widget = WidgetStore.instance.getApps(roomId).find((app) => WidgetType.JITSI.matches(app.type));
         if (widget) {
+            console.log("[LegacyCallHandler] Jitsi widget already exists, pinning it");
             // If there already is a Jitsi widget, pin it
             const room = client.getRoom(roomId);
             if (isNotNull(room)) {
@@ -1033,9 +1162,14 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
         }
 
         try {
+            console.log("[LegacyCallHandler] Creating new Jitsi widget");
             await WidgetUtils.addJitsiWidget(client, roomId, type, "Jitsi", false);
+            console.log("[LegacyCallHandler] Jitsi widget added successfully, waiting for room event...");
             logger.log("Jitsi widget added");
+            // Note: Notification is handled via room events (m.widgets)
+            // so other participants get notified, not the one who started it
         } catch (e) {
+            console.error("[LegacyCallHandler] Error adding Jitsi widget:", e);
             if (e instanceof MatrixError && e.errcode === "M_FORBIDDEN") {
                 Modal.createDialog(ErrorDialog, {
                     title: _t("voip|no_permission_conference"),
@@ -1046,19 +1180,160 @@ export default class LegacyCallHandler extends TypedEventEmitter<LegacyCallHandl
         }
     }
 
+    /**
+     * Stops the Jitsi ringing sound for a room
+     */
+    public stopJitsiRing(roomId?: string): void {
+        console.log("[stopJitsiRing] Called - roomId:", roomId, "activeJitsiRingAudio:", this.activeJitsiRingAudio);
+        
+        // If a specific room is requested, only stop if it matches the active ring
+        if (roomId && this.activeJitsiRingAudio !== roomId) {
+            console.log("[stopJitsiRing] Room mismatch, not stopping (active room:", this.activeJitsiRingAudio, ")");
+            return;
+        }
+        
+        // Only stop if we have an active ring
+        if (!this.activeJitsiRingAudio) {
+            console.log("[stopJitsiRing] No active ring to stop");
+            return;
+        }
+        
+        console.log("[stopJitsiRing] Stopping audio...");
+        this.pause(AudioID.Ring);
+        this.activeJitsiRingAudio = null;
+        console.log("[stopJitsiRing] Audio stopped");
+    }
+
+    /**
+     * Notifies other participants when a Jitsi widget is added to a room
+     * (only for participants who didn't create the widget)
+     */
+    public notifyJitsiWidgetAdded(roomId: string, creatorId: string): void {
+        const client = MatrixClientPeg.safeGet();
+        const currentUserId = client.getUserId();
+
+        console.log("[notifyJitsiWidgetAdded] Called - roomId:", roomId, "creator:", creatorId, "currentUser:", currentUserId);
+
+        // Only show notification if we didn't create this widget
+        if (currentUserId === creatorId) {
+            console.log("[notifyJitsiWidgetAdded] Skipping - user is creator");
+            return;
+        }
+
+        // Stop any existing Jitsi ring before playing a new one
+        if (this.activeJitsiRingAudio) {
+            console.log("[notifyJitsiWidgetAdded] Stopping previous ring from room:", this.activeJitsiRingAudio);
+            this.pause(AudioID.Ring);
+        }
+
+        // Play the ring sound and show notification together
+        console.log("[notifyJitsiWidgetAdded] Starting ring for room:", roomId);
+        void this.play(AudioID.Ring);
+        this.activeJitsiRingAudio = roomId;
+        console.log("[notifyJitsiWidgetAdded] Sound initiated, activeJitsiRingAudio set to:", roomId);
+
+        // Show a toast notification for the Jitsi group call
+        const room = MatrixClientPeg.safeGet().getRoom(roomId);
+        const roomName = room?.name || "Group call";
+        
+        console.log("[notifyJitsiWidgetAdded] About to show toast...");
+        ToastStore.sharedInstance().addOrReplaceToast({
+            key: `jitsi_call_${roomId}`,
+            title: `Group call in ${roomName}`,
+            priority: 95,
+            component: JitsiGroupCallToast,
+            bodyClassName: "mx_JitsiGroupCallToast_container",
+            props: { 
+                roomId,
+                onDismiss: () => this.stopJitsiRing(roomId),
+            },
+        });
+        console.log("[notifyJitsiWidgetAdded] Toast shown");
+
+        // Listen for JoinCall action from the Jitsi widget to auto-dismiss the notification
+        this.setupJitsiWidgetJoinListener(roomId);
+    }
+
+    /**
+     * Sets up a listener for the JoinCall action from the Jitsi widget
+     */
+    private setupJitsiWidgetJoinListener(roomId: string): void {
+        const widgets = WidgetStore.instance.getApps(roomId);
+        if (!widgets) {
+            console.log("[setupJitsiWidgetJoinListener] No widgets found for room:", roomId);
+            return;
+        }
+
+        const jitsiWidget = widgets.find(w => WidgetType.JITSI.matches(w.type));
+        if (!jitsiWidget) {
+            console.log("[setupJitsiWidgetJoinListener] No Jitsi widget found for room:", roomId);
+            return;
+        }
+
+        const widgetMessaging = WidgetMessagingStore.instance.getMessagingForUid(WidgetUtils.getWidgetUid(jitsiWidget));
+        if (!widgetMessaging?.widgetApi) {
+            console.log("[setupJitsiWidgetJoinListener] No widget messaging for widget:", jitsiWidget.id);
+            return;
+        }
+
+        console.log("[setupJitsiWidgetJoinListener] Setting up JoinCall listener for widget:", jitsiWidget.id);
+
+        // Create a listener for the JoinCall action
+        const joinListener = (ev: CustomEvent): void => {
+            console.log("[setupJitsiWidgetJoinListener] JoinCall action received for room:", roomId);
+            // User clicked Join in the Jitsi widget, clear the notification
+            this.clearJitsiNotification(roomId);
+        };
+
+        // Subscribe to the JoinCall action
+        widgetMessaging.widgetApi.on(`action:${ElementWidgetActions.JoinCall}`, joinListener);
+
+        // Store the listener so we can remove it later
+        this.jitsiWidgetJoinListeners.set(jitsiWidget.id, () => {
+            console.log("[setupJitsiWidgetJoinListener] Removing JoinCall listener for widget:", jitsiWidget.id);
+            widgetMessaging.widgetApi!.off(`action:${ElementWidgetActions.JoinCall}`, joinListener);
+        });
+    }
+
+
     public hangupCallApp(roomId: string): void {
         logger.info("Leaving conference call in " + roomId);
-
+        
+        // Note: Do NOT stop the Jitsi ring sound here - let it be stopped only by:
+        // 1. User clicking Dismiss/Join button (handled by clearJitsiNotification)
+        // 2. Widget being removed (handled by onWidgetStoreUpdate)
+        // This method is called by AppTile and timing is unpredictable
+        
+        // Clear the notification tracking
         const roomInfo = WidgetStore.instance.getRoom(roomId);
-        if (!roomInfo) return; // "should never happen" clauses go here
+        if (roomInfo) {
+            const jitsiWidgets = roomInfo.widgets.filter((w) => WidgetType.JITSI.matches(w.type));
+            jitsiWidgets.forEach((w) => {
+                this.notifiedJitsiWidgets.delete(w.id);
+            });
+        }
 
-        const jitsiWidgets = roomInfo.widgets.filter((w) => WidgetType.JITSI.matches(w.type));
+        const roomInfoDetail = WidgetStore.instance.getRoom(roomId);
+        if (!roomInfoDetail) return; // "should never happen" clauses go here
+
+        const jitsiWidgets = roomInfoDetail.widgets.filter((w) => WidgetType.JITSI.matches(w.type));
         jitsiWidgets.forEach((w) => {
             const messaging = WidgetMessagingStore.instance.getMessagingForUid(WidgetUtils.getWidgetUid(w));
             if (!messaging?.widgetApi) return; // more "should never happen" words
 
             messaging.widgetApi.transport.send(ElementWidgetActions.HangupCall, {});
         });
+    }
+
+    /**
+     * Clears the Jitsi notification for a room (called when user joins the widget)
+     */
+    public clearJitsiNotification(roomId: string): void {
+        console.log("[LegacyCallHandler] clearJitsiNotification called for room:", roomId);
+        // Stop the ringing sound
+        this.stopJitsiRing(roomId);
+        // Dismiss the toast
+        ToastStore.sharedInstance().dismissToast(`jitsi_call_${roomId}`);
     }
 
     /*
